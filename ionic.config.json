@@ -1,0 +1,7 @@
+{
+  "name": "diabetic-monitoring",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
