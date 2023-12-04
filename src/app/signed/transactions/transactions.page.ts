@@ -17,6 +17,9 @@ export class TransactionsPage implements OnInit {
 
   async fetchTransactions() {
     const res = await this.db.getAllTransactions();
+    console.log('res trans: ', res);
+
     this.transactions = res?.values;
+    console.log('trans: ', this.transactions);
   }
 }

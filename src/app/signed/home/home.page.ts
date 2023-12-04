@@ -4,6 +4,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { AlertController } from '@ionic/angular';
 import { DatabaseService } from 'src/shared/database/database.service';
 import { NotificationService } from 'src/shared/notification/notification.service';
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-home',
@@ -21,8 +22,6 @@ export class HomePage implements OnInit {
 
   allChannels: any;
 
-  alertIsOpen: Boolean = false;
-
   constructor(
     private alertController: AlertController,
     private db: DatabaseService,
@@ -30,6 +29,9 @@ export class HomePage implements OnInit {
   ) {}
 
   async ngOnInit() {
+    App.addListener('appStateChange', ({ isActive }) => {
+      console.log('App state changes. Is active?', isActive);
+    });
     // CLICKED
     LocalNotifications.addListener(
       'localNotificationActionPerformed',
@@ -86,9 +88,8 @@ export class HomePage implements OnInit {
 
   async sugarAlertHandler() {
     this.sugarlvlAlert = await this.createSugarAlert();
-    if (!this.alertIsOpen) {
-      await this.sugarlvlAlert.present();
-    }
+    await this.sugarlvlAlert.present();
+    await LocalNotifications.removeAllDeliveredNotifications();
 
     // Waiting for the alert to be dismissed
     const { role, data } = await this.sugarlvlAlert.onDidDismiss();
@@ -103,7 +104,6 @@ export class HomePage implements OnInit {
       });
       this.insulin = res.values[0].dose;
       data.values.sugarlvl = '';
-      this.alertIsOpen = false;
       this.insulinAlertHandler();
     } else {
       console.log('Alert dismissed without entering a value');
@@ -141,6 +141,7 @@ export class HomePage implements OnInit {
     console.log('data for update Transaction ', data);
     await this.db.addTransaction(data);
     this.sugarLevel = 0;
+    this.insulin = '';
   }
 
   async reScheduleNotification() {

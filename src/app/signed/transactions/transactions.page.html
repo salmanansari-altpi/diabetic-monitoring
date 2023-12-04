@@ -8,9 +8,9 @@
   <ion-grid>
     <ion-row>
       <ion-col>EventName</ion-col>
-      <ion-col>EventTime</ion-col>
       <ion-col>Sugar lvl</ion-col>
       <ion-col>Insulin</ion-col>
+      <ion-col>Action</ion-col>
     </ion-row>
   </ion-grid>
   <ion-grid>
@@ -18,15 +18,15 @@
       <ion-col>
         <ion-label>{{ data.eventName }}</ion-label>
       </ion-col>
-      <ion-col>
-        <ion-label>{{ data.eventTime }}</ion-label>
-      </ion-col>
 
       <ion-col>
-        <ion-label>{{ data.sugarLvl }}</ion-label>
+        <ion-label>{{ data.sugarLevel }}</ion-label>
       </ion-col>
       <ion-col>
-        <ion-label>{{ data.insulin }}</ion-label>
+        <ion-label>{{ data.dose }}</ion-label>
+      </ion-col>
+      <ion-col>
+        <ion-label>{{ data.action }}</ion-label>
       </ion-col>
     </ion-row>
   </ion-grid>

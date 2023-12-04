@@ -372,7 +372,9 @@ export class DatabaseService {
   // ---------------- TRANSACTION ----------------------
   async getAllTransactions() {
     try {
-      return await this.db?.query('SELECT * FROM transactions');
+      const res = await this.db?.query('SELECT * FROM transactions');
+      console.log('backen trans:', res);
+      return res;
     } catch (err) {
       throw new Error('Something went wrong in get transaction: ' + err);
     }
@@ -397,7 +399,7 @@ export class DatabaseService {
       }
       const transaction = await this.db?.query(
         'INSERT INTO transactions (eventName, sugarLevel, action, date, dose) VALUES ( ?, ?, ?, ?, ?)',
-        [eventName, 0, action, date, 0]
+        [eventName, sugarLevel, action, date, dose]
       );
       console.log('transactions hass been added with this detail : ', data);
       return transaction;
