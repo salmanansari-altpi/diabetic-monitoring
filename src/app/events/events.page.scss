@@ -1,0 +1,84 @@
+.error {
+  color: red;
+  text-align: center;
+}
+
+ion-header {
+  --border: none;
+  ion-toolbar {
+    --background: #ffd099;
+    --color: #000;
+  }
+}
+
+ion-content {
+  ion-list {
+    margin: 1vh 2vh;
+
+    ion-button {
+      --background: #ffd099;
+      --color: #000;
+    }
+
+    ion-item {
+      ion-input {
+        margin-bottom: 1vh;
+      }
+    }
+  }
+
+  ion-buttons {
+    margin: 2vh;
+    display: flex;
+    justify-content: space-between;
+
+    ion-button {
+      --background: #ffd099;
+      --color: #000;
+      display: flex;
+      gap: 3vh;
+    }
+  }
+}
+
+// ------------------- Event selection --------------------
+
+ion-select {
+  --placeholder-color: #ffd099;
+  --label-color: #ffd099;
+  --placeholder-opacity: 1;
+  width: 100%;
+  justify-content: center;
+}
+
+ion-select::part(label),
+ion-select::part(text) {
+  color: #ffd099;
+}
+
+ion-select::part(text) {
+  color: #ffd099;
+}
+
+ion-select::part(icon) {
+  color: #ffd099;
+  opacity: 1;
+}
+
+//button
+ion-button {
+  --background: #ffd099;
+  --color: #000;
+  border-radius: 10px;
+  margin: 0 1vh;
+}
+.next {
+  position: fixed;
+  bottom: 10px;
+  right: 0;
+}
+.back {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+}

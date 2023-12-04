@@ -1,0 +1,133 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>events</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form #custom="ngForm">
+    <ion-item class="ion-margin">
+      <ion-input
+        required
+        type="text"
+        placeholder="Event Name"
+        name="custName"
+        [(ngModel)]="customEventName"
+      />
+      <ion-button [disabled]="custom.invalid" (click)="addCustomEvent()"
+        >Add Custom Event</ion-button
+      >
+    </ion-item>
+  </form>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-select label="select time" label-placement="floating" interface="popover" fill="outline"
+              (ionChange)="event($event)">
+              <ion-select-option *ngFor="let data of dropdownEvents" [value]=" data.eventName">{{
+                data.eventName}}</ion-select-option>
+            </ion-select>
+          </ion-col>
+          <ion-col>
+            <div id="time" style="padding-top: 1rem; margin-left: 1rem; font-size: 2rem">
+              <ion-text> {{ time | date :'shortTime' }} </ion-text>
+            </div>
+            <ion-modal trigger="time" [enterAnimation]="enterAnimation" [leaveAnimation]="leaveAnimation">
+              <ng-template>
+                <ion-content>
+                  <ion-datetime #time presentation="time" size="cover" (ionChange)="selectTime(time.value)"
+                    showDefaultButtons="true" (ionCancel)="!showTime">
+                  </ion-datetime>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </ion-col>
+        </ion-row>
+
+        <form #showedEvent="ngForm">
+          <ion-row>
+            <ion-col size="3">
+              <ion-input
+                label="StartRange"
+                labelPlacement="floating"
+                required
+                type="number"
+                [value]="startRange"
+                name="startRange"
+                placeholder="0"
+                [(ngModel)]="startRange"
+                ngModel
+              >
+              </ion-input>
+            </ion-col>
+            <ion-col size="3">
+              <ion-input
+                label="EndRange"
+                labelPlacement="floating"
+                required
+                type="number"
+                [value]="endRange"
+                name="endRange"
+                placeholder="90"
+                [(ngModel)]="endRange"
+                ngModel
+              >
+              </ion-input>
+            </ion-col>
+            <ion-col size="3">
+              <ion-input
+                label="Insuline"
+                labelPlacement="floating"
+                required
+                type="number"
+                [value]="insuline"
+                name="dose"
+                placeholder="25"
+                [(ngModel)]="insuline"
+                ngModel
+              >
+              </ion-input>
+            </ion-col>
+            <ion-col size="2">
+              <ion-button
+                type="Submit"
+                [disabled]="showedEvent.invalid"
+                (click)="addEvent(showedEvent.value)"
+                >Add</ion-button
+              >
+            </ion-col>
+          </ion-row>
+          <ion-text class="ion-margin error" *ngIf="showError">{{ error }}</ion-text>
+        </form>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="allEvents[1]?.values && showData">
+    <ion-card-title class="ion-margin-top ion-margin-start">
+      {{allEvents[0]?.eventName}}
+    </ion-card-title>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>StartingRange</ion-col>
+          <ion-col>EndingRange</ion-col>
+          <ion-col> Insulin </ion-col>
+        </ion-row>
+        <ion-row *ngFor="let data of allEvents[1]?.values">
+          <ion-col> {{data?.startRange}} </ion-col>
+          <ion-col> {{data?.endRange}} </ion-col>
+          <ion-col> {{data?.dose}} </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button class="next" (click)="handleNext()"
+    >Next
+    <ion-icon name="arrow-forward"></ion-icon>
+  </ion-button>
+</ion-content>

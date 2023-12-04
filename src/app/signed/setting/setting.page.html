@@ -1,0 +1,111 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>setting</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ng-container *ngIf="showEdit">
+    <ion-list>
+      <h2 class="ion-margin-start">Editing {{ editEventName }}</h2>
+      <ion-item>
+        <div class="time">
+          <ion-label>Time: </ion-label>
+          <div
+            id="etime"
+            style="padding-top: 1rem; margin-left: 2vw; font-size: 1.4rem"
+          >
+            <ion-text> {{ editTime | date : 'shortTime'}} </ion-text>
+          </div>
+        </div>
+        <ion-modal
+          trigger="etime"
+          [enterAnimation]="enterAnimation"
+          [leaveAnimation]="leaveAnimation"
+        >
+          <ng-template>
+            <ion-content>
+              <ion-datetime
+                #time
+                presentation="time"
+                size="cover"
+                (ionChange)="selectTime(time.value)"
+                showDefaultButtons="true"
+                (ionCancel)="!showTime"
+              >
+              </ion-datetime>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          type="number"
+          label="Start Range: "
+          placeholder="starting range"
+          [(ngModel)]="editStartRange"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          type="number"
+          label="End Range: "
+          placeholder="ending range"
+          [(ngModel)]="editEndRange"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          type="number"
+          label="Insulin "
+          placeholder="Insulin dose"
+          [(ngModel)]="insulin"
+        ></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button class="btn" expand="full" (click)="editHandler()"
+      >Edit</ion-button
+    >
+  </ng-container>
+
+  <ng-container *ngIf="!showEdit">
+    <ion-grid *ngFor="let sdata of result[0]">
+      <ion-row>
+        <ion-col> {{ sdata.eventName}} </ion-col>
+        <ion-col> {{ sdata.eventTime | date: 'shortTime' }} </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col> starting Range </ion-col>
+        <ion-col> Ending Range </ion-col>
+        <ion-col> Insulin </ion-col>
+        <ion-col> Action </ion-col>
+      </ion-row>
+      <ng-container *ngFor="let ldata of result[1]">
+        <ion-row *ngIf="ldata.eventId === sdata.eventId">
+          <ion-col class="ion-text-center">
+            <ion-text> {{ ldata?.startRange}} </ion-text>
+          </ion-col>
+          <ion-col class="ion-text-center">
+            <ion-text> {{ ldata?.endRange }} </ion-text>
+          </ion-col>
+          <ion-col class="ion-text-center">
+            <ion-text> {{ ldata?.dose}} </ion-text>
+          </ion-col>
+          <ion-col>
+            <ion-button
+              class="btn"
+              fill="clear"
+              [id]="ldata?.id"
+              #id
+              (click)="toggleEditHandler({ id })"
+              >Edit</ion-button
+            >
+          </ion-col>
+        </ion-row>
+      </ng-container>
+    </ion-grid>
+    <ion-button fill="clear" (click)="handleAddMoreEvent()"
+      >Add More Events</ion-button
+    >
+  </ng-container>
+</ion-content>

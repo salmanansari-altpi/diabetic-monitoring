@@ -1,0 +1,92 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Personal Information</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [scrollY]="true">
+  <ion-img src="../../../../assets/login.svg"></ion-img>
+
+  <div class="inputs">
+    <form #login="ngForm">
+      <ion-list>
+        <ion-item>
+          <ion-input
+            type="text"
+            required
+            label="Your Name..."
+            labelPlacement="floating"
+            placeholder="Your Name..."
+            name="pName"
+            [(ngModel)]="pName"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            type="text"
+            required
+            label="Your Email..."
+            labelPlacement="floating"
+            placeholder="Your Email..."
+            name="pEmail"
+            [(ngModel)]="pEmail"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            type="number"
+            required
+            label="Your Mobile..."
+            labelPlacement="floating"
+            placeholder="Your Mobile..."
+            name="pMobile"
+            [(ngModel)]="pMobile"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input
+            type="text"
+            required
+            label="Doctor Name..."
+            labelPlacement="floating"
+            placeholder="Doctor Name..."
+            name="dName"
+            [(ngModel)]="dName"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            type="text"
+            required
+            label="Doctor Email..."
+            labelPlacement="floating"
+            placeholder="Doctor Email..."
+            name="dEmail"
+            [(ngModel)]="dEmail"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            type="number"
+            required
+            label="Doctor Mobile..."
+            labelPlacement="floating"
+            placeholder="Doctor Mobile..."
+            name="dMobile"
+            [(ngModel)]="dMobile"
+          ></ion-input>
+        </ion-item>
+        <div class="actions">
+          <ion-button
+            type="submit"
+            [disabled]="login.invalid"
+            (click)="registerUser()"
+            >Next
+            <ion-icon name="arrow-forward"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-list>
+    </form>
+  </div>
+</ion-content>
