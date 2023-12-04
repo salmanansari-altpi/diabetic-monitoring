@@ -1,39 +1,59 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
-import { DatabaseService } from 'src/shared/database/database.service';
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { LocalNotifications } from "@capacitor/local-notifications";
+import { LoadingController } from "@ionic/angular";
+import { DatabaseService } from "src/shared/database/database.service";
 
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.page.html',
-  styleUrls: ['./users.page.scss'],
+  selector: "app-users",
+  templateUrl: "./users.page.html",
+  styleUrls: ["./users.page.scss"],
 })
 export class UsersPage implements OnInit {
-userData:any
+  userData: any;
   constructor(
-    private databaseService:DatabaseService,
-    private router:Router,
-    private loadingCtrl:LoadingController
-  ) { }
+    private databaseService: DatabaseService,
+    private router: Router,
+    private loadingCtrl: LoadingController
+  ) {}
 
   ngOnInit() {
-    console.log("users page")
-    this.loadUsers()
+    console.log("users page");
+    this.loadUsers();
   }
+
+  async Permission() {
+    try {
+      await LocalNotifications.checkPermissions().then(
+        async (permisioncheck) => {
+          console.log("permision", permisioncheck);
+          if (permisioncheck.display === "granted") {
+            return;
+          }
+          await LocalNotifications.requestPermissions();
+        }
+      );
+    } catch (err:any) {
+      throw new Error(err);
+    }
+  }
+
   async loadUsers() {
+    this.Permission();
     this.userData = await this.databaseService.getUsers();
     // console.log(this.router.url);
-    if (this.userData.values) {
+    console.log("this is user data : ",this.userData);
+    if (this.userData?.values.length > 0 ) {
       // console.log(this.router.url);
-      this.router.navigateByUrl('view/users/signed/home');
-    }else {
-      this.router.navigateByUrl('view/users/login');
+      this.router.navigateByUrl("view/users/signed/home");
+    } else {
+      this.router.navigateByUrl("view/users/login");
     }
   }
 
   async showLoading() {
     const loading = await this.loadingCtrl.create({
-      spinner: 'crescent',
+      spinner: "crescent",
       duration: 500,
       animated: true,
       backdropDismiss: true,
@@ -44,5 +64,4 @@ userData:any
       this.loadUsers();
     });
   }
-
 }
