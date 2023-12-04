@@ -18,29 +18,9 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.showLoading();
+    // this.showLoading();
+    console.log("app page")
   }
 
-  async loadUsers() {
-    this.userData = await this.databaseService.getUsers();
-    // console.log(this.router.url);
-    if (this.userData) {
-      // console.log(this.router.url);
-      this.router.navigateByUrl('signed');
-    }
-  }
-
-  async showLoading() {
-    const loading = await this.loadingCtrl.create({
-      spinner: 'crescent',
-      duration: 500,
-      animated: true,
-      backdropDismiss: true,
-      translucent: true,
-    });
-
-    loading.present().then(() => {
-      this.loadUsers();
-    });
-  }
+  
 }

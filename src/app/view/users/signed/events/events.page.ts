@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { AnimationController } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LocalNotifications } from '@capacitor/local-notifications';
-
-import { DatabaseService } from '../../shared/database/database.service';
-import { NotificationService } from 'src/shared/notification/notification.service';
+import { DatabaseService } from 'src/shared/database/database.service';
+import { NotificationService } from "../../../../../shared/notification/notification.service";
 
 @Component({
   selector: 'app-events',
@@ -34,7 +34,8 @@ export class EventsPage implements OnInit {
     private animationCtrl: AnimationController,
     private router: Router,
     private db: DatabaseService,
-    private localNotification: NotificationService
+    private localNotification: NotificationService,
+    private route: ActivatedRoute
   ) {
     this.eventName = 'Breakfast';
     this.fetchAllEventNames();
@@ -96,28 +97,35 @@ export class EventsPage implements OnInit {
     this.time = this.allEvents[0].eventTime;
   }
 
-  // Go To Next Page
+  // handling Next and setting the notification
   async handleNext() {
     await LocalNotifications.deleteChannel({ id: 'diabetic' });
-    const pendingNotification = await LocalNotifications.getPending();
-    console.log('pending noti: ', pendingNotification);
-    if (pendingNotification.notifications.length > 0) {
-      pendingNotification.notifications.forEach(async (notification) => {
+    let pendingNoti = await LocalNotifications.getPending();
+    console.log('all pending ', pendingNoti);
+    if (pendingNoti.notifications.length > 0) {
+      pendingNoti.notifications.forEach(async (notification) => {
         console.log('all pending noti for delete', notification);
         await LocalNotifications.cancel({ notifications: [notification] });
       });
     }
 
     let rid = 0;
-    const { values: eventLists }: any = await this.db.getEventsList();
+    const { values: eventList }: any = await this.db.getEventsList();
 
-    for (let i = 0; i < eventLists.length; i++) {
-      ++rid;
-      const firstEvent: any = await this.db.getEvents(eventLists[i].eventName);
+    //forloop
+    for (let i = 0; i < eventList.length; i++) {
+      // if (eventList[i].eventName != 'Fixed') {
+      rid += 1;
+      let firstEvent: any = await this.db.getEvents(
+        eventList[i].eventName
+      );
 
-      console.log('firstEvent: ', firstEvent);
+      console.log('ddata', firstEvent);
+      console.table(firstEvent?.values[0]);
+      console.table(firstEvent?.values[1]);
 
       const date = new Date(firstEvent[0].eventTime);
+      
       const data = {
         id: rid,
         title: firstEvent[0].eventName,
@@ -127,7 +135,7 @@ export class EventsPage implements OnInit {
       };
       this.localNotification.showNotification(data);
     }
-    this.router.navigateByUrl('signed');
+    this.router.navigateByUrl('view/users/signed/home');
   }
 
   resetFormValue() {
@@ -135,7 +143,8 @@ export class EventsPage implements OnInit {
     this.endRange = '';
     this.insuline = '';
   }
-  // MODAL ANIMATIONS
+
+  //modal Animation
   enterAnimation = (baseEl: HTMLElement) => {
     const root = baseEl.shadowRoot;
 

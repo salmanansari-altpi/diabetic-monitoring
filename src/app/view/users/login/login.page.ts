@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DatabaseService } from '../../shared/database/database.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { DatabaseService } from 'src/shared/database/database.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +21,11 @@ export class LoginPage implements OnInit {
 
   userExists: Boolean = false;
 
-  constructor(private db: DatabaseService, private router: Router) {}
+  constructor(
+    private db: DatabaseService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     // this.fetchUser();
@@ -47,7 +51,7 @@ export class LoginPage implements OnInit {
   }
   async makePermission(data: string) {}
 
-  async registerUser() {
+  registerUser() {
     const formData = {
       pName: this.pName,
       pEmail: this.pEmail,
@@ -58,11 +62,18 @@ export class LoginPage implements OnInit {
       dMobile: this.dMobile,
     };
 
-    await this.db
+    this.db
       .addUser(formData)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err.message));
-    this.db.isLoggedIn = true;
-    this.router.navigateByUrl('events');
+      .then((res: any) => {
+        console.log("the login form submitted");
+        this.router.navigate(['/view/users/signed']);
+      })
+      .catch((err: any) => console.log(err.message));
+    // this.db.isLoggedIn = true;
+    // this.router.navigate(['events']);
+    // this.router.navigate(['view/users/events']);
+    // this.router.events.subscribe((event) => {
+    //   console.log(event);
+    // });
   }
 }

@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content [scrollY]="true">
-  <ion-img src="../../../../assets/login.svg"></ion-img>
+  <ion-img type="svg" src="../../assets/login.svg"></ion-img>
 
   <div class="inputs">
     <form #login="ngForm">
@@ -80,11 +80,17 @@
         <div class="actions">
           <ion-button
             type="submit"
-            [disabled]="login.invalid"
             (click)="registerUser()"
             >Next
             <ion-icon name="arrow-forward"></ion-icon>
           </ion-button>
+          <!-- <ion-button
+            type="submit"
+            [disabled]="login.invalid"
+            (click)="registerUser()"
+            >Next
+            <ion-icon name="arrow-forward"></ion-icon>
+          </ion-button> -->
         </div>
       </ion-list>
     </form>

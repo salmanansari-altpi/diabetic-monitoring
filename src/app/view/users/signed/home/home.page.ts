@@ -29,11 +29,8 @@ export class HomePage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    App.addListener('appStateChange', ({ isActive }) => {
-      console.log('App state changes. Is active?', isActive);
-    });
     // CLICKED
-    LocalNotifications.addListener(
+    await LocalNotifications.addListener(
       'localNotificationActionPerformed',
       (notification) => {
         this.sugarAlertHandler();
@@ -41,13 +38,14 @@ export class HomePage implements OnInit {
     );
 
     // RECIEVED
-    LocalNotifications.addListener(
+    await LocalNotifications.addListener(
       'localNotificationReceived',
-      (notification) => {
+      async (notification) => {
         Haptics.vibrate({ duration: 1000 });
         this.eventName = notification.title;
-        this.sugarAlertHandler();
-        this.getPendingNotifications();
+
+        const data = { eventName: this.eventName, date: new Date().toString() };
+        await this.db.addTransaction(data);
       }
     );
 
@@ -104,6 +102,7 @@ export class HomePage implements OnInit {
       });
       this.insulin = res.values[0].dose;
       data.values.sugarlvl = '';
+      await this.sugarlvlAlert.dismiss();
       this.insulinAlertHandler();
     } else {
       console.log('Alert dismissed without entering a value');

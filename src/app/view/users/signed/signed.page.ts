@@ -10,6 +10,7 @@ export class SignedPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log("signed page")
   }
 
 }

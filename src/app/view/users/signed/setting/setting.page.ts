@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { AnimationController } from '@ionic/angular';
 import { DatabaseService } from 'src/shared/database/database.service';
@@ -29,7 +29,8 @@ export class SettingPage implements OnInit {
     private animationCtrl: AnimationController,
     private db: DatabaseService,
     private localNotification: NotificationService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -115,7 +116,14 @@ export class SettingPage implements OnInit {
   }
 
   handleAddMoreEvent() {
-    this.router.navigateByUrl('events');
+    console.log("click back");
+    // this.router.navigate(['../../events'], {
+    //   relativeTo: this.route.parent,
+    // }).then(success => {
+    //   console.log(`Navigation status: ${success}`);
+    //   console.log('this is route of the event page :', this.router.url);
+    //  });
+    this.router.navigateByUrl("view/users/signed/events")
   }
 
   // ANIMATION

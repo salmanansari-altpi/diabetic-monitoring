@@ -9,11 +9,6 @@ const routes: Routes = [
     component: SignedPage,
     children: [
       {
-        path: '',
-        redirectTo: 'home',
-        pathMatch: 'full',
-      },
-      {
         path: 'home',
         loadChildren: () =>
           import('./home/home.module').then((m) => m.HomePageModule),
@@ -29,6 +24,17 @@ const routes: Routes = [
           import('./transactions/transactions.module').then(
             (m) => m.TransactionsPageModule
           ),
+      },
+      {
+        path: 'events',
+        loadChildren: () =>
+          import('./events/events.module').then((m) => m.EventsPageModule),
+      },
+      
+      {
+        path: '',
+        redirectTo: 'events',
+        pathMatch: 'full',
       },
     ],
   },
