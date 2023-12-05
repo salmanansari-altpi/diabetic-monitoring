@@ -113,7 +113,6 @@ export class EventsPage implements OnInit {
 
     //forloop
     for (let i = 0; i < eventList.length; i++) {
-      // if (eventList[i].eventName != 'Fixed') {
       rid += 1;
       let firstEvent: any = await this.db.getEvents(
         eventList[i].eventName

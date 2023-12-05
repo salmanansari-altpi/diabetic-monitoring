@@ -105,7 +105,7 @@ export class HomePage implements OnInit {
       });
       this.insulin = res.values[0].dose;
       data.values.sugarlvl = '';
-      await this.sugarlvlAlert.dismiss();
+      // await this.sugarlvlAlert.dismiss();
       this.insulinAlertHandler();
     } else {
       console.log('Alert dismissed without entering a value');
