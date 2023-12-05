@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { AnimationController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalNotifications } from '@capacitor/local-notifications';

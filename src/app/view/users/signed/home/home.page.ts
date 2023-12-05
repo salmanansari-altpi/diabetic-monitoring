@@ -27,10 +27,11 @@ export class HomePage implements OnInit {
     private db: DatabaseService,
     private localNotification: NotificationService
   ) {
-    this.fetchUser();
+    this.fetchUser()
   }
 
   async ngOnInit() {
+
     // CLICKED
     await LocalNotifications.addListener(
       'localNotificationActionPerformed',
@@ -104,7 +105,7 @@ export class HomePage implements OnInit {
       });
       this.insulin = res.values[0].dose;
       data.values.sugarlvl = '';
-      this.sugarlvlAlert.dismiss();
+      await this.sugarlvlAlert.dismiss();
       this.insulinAlertHandler();
     } else {
       console.log('Alert dismissed without entering a value');
@@ -133,6 +134,7 @@ export class HomePage implements OnInit {
 
   async addTransaction() {
     const data = {
+      eventName: this.eventName,
       sugarLevel: this.sugarLevel,
       dose: this.insulin,
       date: new Date().toString(),

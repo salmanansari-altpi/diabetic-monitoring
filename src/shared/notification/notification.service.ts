@@ -9,12 +9,9 @@ import {
   providedIn: 'root',
 })
 export class NotificationService {
-  notificationClicked = new EventEmitter<void>();
 
   constructor() {
-    LocalNotifications.addListener('localNotificationActionPerformed', () => {
-      this.notificationClicked.emit();
-    });
+    
   }
 
   async showNotification(data: any) {
