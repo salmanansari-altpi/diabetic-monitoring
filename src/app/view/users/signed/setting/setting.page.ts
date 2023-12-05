@@ -87,32 +87,7 @@ export class SettingPage implements OnInit {
   }
 
   async updateNotification() {
-    await LocalNotifications.deleteChannel({ id: 'diabetic' });
-    const pendingNoti = await LocalNotifications.getPending();
-    console.log('pending noti:', pendingNoti);
-
-    if (pendingNoti.notifications.length > 0) {
-      pendingNoti.notifications.forEach(async (notification) => {
-        await LocalNotifications.cancel({ notifications: [notification] });
-      });
-    }
-
-    let rid = 0;
-    const { values: eventList }: any = await this.db.getEventsList();
-    for (let i = 0; i < eventList.length; i++) {
-      ++rid;
-      const firstEvent: any = await this.db.getEvents(eventList[i].eventName);
-      console.log('firstEvent: ', firstEvent);
-      const date = new Date(firstEvent[0].eventTime);
-      const data = {
-        id: rid,
-        title: firstEvent[0].eventName,
-        body: firstEvent[0].eventName,
-        eventName: firstEvent[0].eventName,
-        date,
-      };
-      this.localNotification.showNotification(data);
-    }
+    await this.localNotification.checkAllAndSchedule();
   }
 
   handleAddMoreEvent() {

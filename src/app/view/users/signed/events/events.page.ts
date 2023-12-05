@@ -98,41 +98,7 @@ export class EventsPage implements OnInit {
 
   // handling Next and setting the notification
   async handleNext() {
-    await LocalNotifications.deleteChannel({ id: 'diabetic' });
-    let pendingNoti = await LocalNotifications.getPending();
-    console.log('all pending ', pendingNoti);
-    if (pendingNoti.notifications.length > 0) {
-      pendingNoti.notifications.forEach(async (notification) => {
-        console.log('all pending noti for delete', notification);
-        await LocalNotifications.cancel({ notifications: [notification] });
-      });
-    }
-
-    let rid = 0;
-    const { values: eventList }: any = await this.db.getEventsList();
-
-    //forloop
-    for (let i = 0; i < eventList.length; i++) {
-      rid += 1;
-      let firstEvent: any = await this.db.getEvents(
-        eventList[i].eventName
-      );
-
-      console.log('ddata', firstEvent);
-      console.table(firstEvent?.values[0]);
-      console.table(firstEvent?.values[1]);
-
-      const date = new Date(firstEvent[0].eventTime);
-      
-      const data = {
-        id: rid,
-        title: firstEvent[0].eventName,
-        body: firstEvent[0].eventName,
-        eventName: firstEvent[0].eventName,
-        date,
-      };
-      this.localNotification.showNotification(data);
-    }
+    await this.localNotification.checkAllAndSchedule()
     this.router.navigateByUrl('view/users/signed/home');
   }
 

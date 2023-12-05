@@ -91,6 +91,7 @@ export class HomePage implements OnInit {
     this.sugarlvlAlert = await this.createSugarAlert();
     await this.sugarlvlAlert.present();
     await LocalNotifications.removeAllDeliveredNotifications();
+    await LocalNotifications.removeAllListeners();
 
     // Waiting for the alert to be dismissed
     const { role, data } = await this.sugarlvlAlert.onDidDismiss();
@@ -147,25 +148,6 @@ export class HomePage implements OnInit {
   }
 
   async reScheduleNotification() {
-    let rid = 0;
-
-    const { values: eventList }: any = await this.db.getEventsList();
-
-    for (let i = 0; i < eventList.length; i++) {
-      rid += 1;
-      const firstEvent: any = await this.db.getEvents(eventList[1].eventName);
-      console.log('ddata: ', firstEvent);
-
-      const date = new Date(firstEvent[0].eventTime);
-
-      const data = {
-        id: rid,
-        title: firstEvent[0].eventName,
-        body: firstEvent[0].eventName,
-        eventName: firstEvent[0].eventName,
-        date: date,
-      };
-      await this.localNotification.showNotification(data);
-    }
+   await this.localNotification.checkAllAndSchedule()
   }
 }

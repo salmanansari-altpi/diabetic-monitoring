@@ -54,6 +54,7 @@ export class UsersPage implements OnInit {
   async showLoading() {
     const loading = await this.loadingCtrl.create({
       spinner: "crescent",
+      message:"All done",
       duration: 500,
       animated: true,
       backdropDismiss: true,
