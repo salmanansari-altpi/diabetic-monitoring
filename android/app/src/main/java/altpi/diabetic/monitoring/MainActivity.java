@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package altpi.diabetic.monitoring;
 
 import com.getcapacitor.BridgeActivity;
 

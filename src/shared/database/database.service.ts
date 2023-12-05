@@ -69,7 +69,6 @@ export class DatabaseService {
         date STRING
       )`);
     }
-
   }
   run = async () => {
     const { values: events }: any = await this.getEventsList();
@@ -392,13 +391,13 @@ export class DatabaseService {
 
   async addTransaction(data: any) {
     try {
-      const { eventName, sugarLevel, action, date, dose } = data;
-      if (!eventName || !date || !sugarLevel || !action || !dose) {
+      const { eventName, date } = data;
+      if (!eventName || !date) {
         throw new Error('All fields are mandatory!');
       }
       const transaction = await this.db?.query(
         'INSERT INTO transactions (eventName, sugarLevel, action, date, dose) VALUES ( ?, ?, ?, ?, ?)',
-        [eventName, sugarLevel, action, date, dose]
+        [eventName, 0, 'reject', date, 0]
       );
       console.log('transactions hass been added with this detail : ', data);
       return transaction;
@@ -418,8 +417,8 @@ export class DatabaseService {
       );
       const lastId = transactions[transactions.length - 1].id;
 
-      const transaction = await this.db?.query(
-        'UPDATE transactions SET sugarLevel = ?,  action = ?, date = ?,  dose = ?) WHERE id = ?',
+      await this.db?.query(
+        'UPDATE transactions SET sugarLevel = ?, action = ?, date = ?, dose = ? WHERE id = ?',
         [sugarLevel, action, date, dose, lastId]
       );
     } catch (err) {

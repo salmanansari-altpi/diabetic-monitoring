@@ -44,3 +44,16 @@ ion-list {
   background-color: #2c2d2f;
   color: #fff;
 }
+ion-modal {
+  --background: rgb(44, 39, 45, 0.2);
+  &::part(content) {
+    backdrop-filter: blur(6px);
+  }
+  ion-content {
+    --background: transparent;
+    --padding-top: 25vh;
+    --padding-start: 1.25rem;
+    --padding-end: 1.25rem;
+    --background: transparent;
+  }
+}

@@ -19,7 +19,7 @@ export class UsersPage implements OnInit {
 
   ngOnInit() {
     console.log("users page");
-    this.loadUsers();
+    this.showLoading();
   }
 
   async Permission() {

@@ -26,7 +26,9 @@ export class HomePage implements OnInit {
     private alertController: AlertController,
     private db: DatabaseService,
     private localNotification: NotificationService
-  ) {}
+  ) {
+    this.fetchUser();
+  }
 
   async ngOnInit() {
     // CLICKED
@@ -102,7 +104,7 @@ export class HomePage implements OnInit {
       });
       this.insulin = res.values[0].dose;
       data.values.sugarlvl = '';
-      await this.sugarlvlAlert.dismiss();
+      this.sugarlvlAlert.dismiss();
       this.insulinAlertHandler();
     } else {
       console.log('Alert dismissed without entering a value');

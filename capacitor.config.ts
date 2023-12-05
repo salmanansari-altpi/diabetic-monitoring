@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'altpi.diabetic.monitoring',
   appName: 'diabetic-monitoring',
   webDir: 'www',
   server: {
