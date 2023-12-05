@@ -131,14 +131,13 @@ export class HomePage implements OnInit {
 
   async addTransaction() {
     const data = {
-      eventName: this.eventName,
       sugarLevel: this.sugarLevel,
       dose: this.insulin,
       date: new Date().toString(),
       action: 'success',
     };
     console.log('data for update Transaction ', data);
-    await this.db.addTransaction(data);
+    await this.db.updateTransaction(data);
     this.sugarLevel = 0;
     this.insulin = '';
   }

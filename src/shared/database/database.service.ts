@@ -70,7 +70,6 @@ export class DatabaseService {
       )`);
     }
 
-    this.run();
   }
   run = async () => {
     const { values: events }: any = await this.getEventsList();
