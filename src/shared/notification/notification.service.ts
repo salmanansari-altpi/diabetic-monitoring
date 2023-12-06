@@ -15,12 +15,14 @@ export class NotificationService {
 
   async checkAllAndSchedule() {
     let channels: any = await LocalNotifications.listChannels();
-    console.log(channels[0])
-    if (channels[0]?.id === this.channelId) {
-      this.deleteChannels(`${channels[0]?.id}`).then(async () => {
+    console.log(channels.channels[0])
+    if (channels.channels[0].id === this.channelId) {
+      console.log("deleting channel")
+      this.deleteChannels(`${channels.channels[0].id}`).then(async () => {
         await this.scheduleNoti();
       });
     } else {
+      console.log("without deleting channel")
       await this.scheduleNoti();
     }
   }
@@ -37,10 +39,13 @@ export class NotificationService {
       visibility: 1,
       lights: true,
     };
+    console.log("created channel")
     await LocalNotifications.createChannel(channelOption);
+   
   }
 
   async scheduleNoti() {
+    console.log("Scheduling noti")
     this.checksBeforeSchedule().then(async ()=>{
       let rid = 0;
       const { values: eventList }: any = await this.db.getEventsList();
@@ -56,15 +61,17 @@ export class NotificationService {
           eventName: firstEvent[0].eventName,
           date,
         };
-        this.notification(data);
+        await this.notification(data);
       }
     })
 
   }
 
   async checksBeforeSchedule(){
-    await this.createChannels();
+    console.log("removeing all listner and change")
     await LocalNotifications.removeAllListeners();
+    await LocalNotifications.removeAllDeliveredNotifications()
+    await this.createChannels();
 
     const pendingNoti = await LocalNotifications.getPending();
     console.log('pending noti:', pendingNoti);
@@ -96,11 +103,6 @@ export class NotificationService {
         },
       ],
     };
-
-    try {
-      return await LocalNotifications.schedule(options);
-    } catch (err) {
-      return console.log("notification service: ", err);
-    }
+    await LocalNotifications.schedule(options);
   }
 }

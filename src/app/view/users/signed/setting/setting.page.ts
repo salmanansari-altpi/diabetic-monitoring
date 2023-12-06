@@ -33,8 +33,8 @@ export class SettingPage implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
-    this.fetchEvents();
+  async ngOnInit() {
+    await this.fetchEvents();
   }
 
   selectTime(data: any) {
@@ -81,8 +81,8 @@ export class SettingPage implements OnInit {
       this.showError = false;
       this.error = '';
       this.showEdit = false;
-      this.updateNotification();
-      this.fetchEvents();
+      await this.updateNotification();
+      await this.fetchEvents();
     }
   }
 
@@ -90,15 +90,11 @@ export class SettingPage implements OnInit {
     await this.localNotification.checkAllAndSchedule();
   }
 
-  handleAddMoreEvent() {
-    console.log("click back");
-    // this.router.navigate(['../../events'], {
-    //   relativeTo: this.route.parent,
-    // }).then(success => {
-    //   console.log(`Navigation status: ${success}`);
-    //   console.log('this is route of the event page :', this.router.url);
-    //  });
-    this.router.navigateByUrl("view/users/signed/events")
+  async handleAddMoreEvent() {
+    console.log('click back');
+    await LocalNotifications.removeAllListeners();
+    await LocalNotifications.removeAllDeliveredNotifications();
+    this.router.navigateByUrl('view/users/signed/events');
   }
 
   // ANIMATION

@@ -35,7 +35,9 @@ export class HomePage implements OnInit {
     // CLICKED
     await LocalNotifications.addListener(
       'localNotificationActionPerformed',
-      (notification) => {
+      (noti:any) => {
+        console.log(noti)
+        this.eventName = noti.notification.title;
         this.sugarAlertHandler();
       }
     );
@@ -45,15 +47,17 @@ export class HomePage implements OnInit {
       'localNotificationReceived',
       async (notification) => {
         Haptics.vibrate({ duration: 1000 });
-        this.eventName = notification.title;
+       
 
-        const data = { eventName: this.eventName, date: new Date().toString() };
+        const data = { eventName: notification.title, date: new Date().toString() };
         await this.db.addTransaction(data);
       }
     );
 
     this.getPendingNotifications();
   }
+
+  
 
   async fetchUser() {
     const res: any = await this.db.getUsers();
