@@ -22,22 +22,25 @@ export class HomePage implements OnInit {
 
   allChannels: any;
 
+  deletelistener: any;
+
   constructor(
     private alertController: AlertController,
     private db: DatabaseService,
     private localNotification: NotificationService
   ) {
-    this.fetchUser()
+    this.fetchUser();
   }
 
   async ngOnInit() {
-
     // CLICKED
     await LocalNotifications.addListener(
       'localNotificationActionPerformed',
-      (noti:any) => {
-        console.log(noti)
+      (noti: any) => {
+        console.log(noti);
         this.eventName = noti.notification.title;
+        this.deletelistener = false;
+        console.log("the noti is click",this.deletelistener)
         this.sugarAlertHandler();
       }
     );
@@ -47,17 +50,33 @@ export class HomePage implements OnInit {
       'localNotificationReceived',
       async (notification) => {
         Haptics.vibrate({ duration: 1000 });
-       
+        this.deletelistener = true; 
+        console.log("the noti is recevie ",this.deletelistener)
 
-        const data = { eventName: notification.title, date: new Date().toString() };
+
+        const data = {
+          eventName: notification.title,
+          date: new Date().toString(),
+        };
         await this.db.addTransaction(data);
       }
-    );
+    ).then(() => {
+      setTimeout(() => {
+        if (this.deletelistener === true) {
+          console.log("after 2.5 seconds")
+          this.removeListener();
+        }
+      }, 2500);
+    });
 
     this.getPendingNotifications();
   }
 
-  
+  async removeListener() {
+    console.log("removing listener in function of removeListener()")
+    await LocalNotifications.removeAllDeliveredNotifications();
+    await LocalNotifications.removeAllListeners();
+  }
 
   async fetchUser() {
     const res: any = await this.db.getUsers();
@@ -152,6 +171,6 @@ export class HomePage implements OnInit {
   }
 
   async reScheduleNotification() {
-   await this.localNotification.checkAllAndSchedule()
+    await this.localNotification.checkAllAndSchedule();
   }
 }
