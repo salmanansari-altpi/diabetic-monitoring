@@ -4,6 +4,7 @@ import {
   SQLiteConnection,
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
+import { format, parseISO } from 'date-fns';
 
 @Injectable({
   providedIn: 'root',
@@ -380,18 +381,28 @@ export class DatabaseService {
 
   async getTransactions(data: any) {
     let { startDate, endDate } = data;
-    startDate = new Date(`${startDate} 00:00:00`).toString();
-    endDate = new Date(`${endDate} 23:59:59`).toString();
 
-    console.log('b s', startDate);
-    console.log('e s: ', endDate);
+    let formatedStartDate = format(
+      parseISO(format(new Date(startDate), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
+      'yyyy-MM-dd'
+    );
+    let formatedEndDate = format(
+      parseISO(format(new Date(endDate), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
+      'yyyy-MM-dd'
+    );
+
+    // startDate = new Date(`${startDate}`).toString();
+    // endDate = new Date(`${endDate}`).toString();
+
+    console.log('b s', formatedStartDate);
+    console.log('b e: ', formatedEndDate);
     try {
       const res = await this.db?.query(
         // 'SELECT * FROM transactions WHERE date BETWEEN ? and ?',
-        'SELECT * FROM transactions WHERE  date >= ?  and date <= ?',
-        [startDate, endDate]
+        'SELECT * FROM transactions WHERE date >= ? AND date <= ?',
+        [formatedStartDate, formatedEndDate]
       );
-      console.log('transsss back: ', res);
+      console.log('transsss back: ', res?.values);
       return res;
     } catch (err) {
       throw new Error('Something went wrong Getting Transaction' + err);
@@ -404,9 +415,14 @@ export class DatabaseService {
       if (!eventName || !date) {
         throw new Error('All fields are mandatory!');
       }
+
+      let formatedDate = format(
+          parseISO(format(new Date(date), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
+          'yyyy-MM-dd'
+        );
       const transaction = await this.db?.query(
         'INSERT INTO transactions (eventName, sugarLevel, action, date, dose) VALUES ( ?, ?, ?, ?, ?)',
-        [eventName, 0, 'Reject', date, 0]
+        [eventName, 0, 'Reject', formatedDate, 0]
       );
       console.log('transactions hass been added with this detail : ', data);
       return transaction;
@@ -421,6 +437,13 @@ export class DatabaseService {
       if (!sugarLevel || !action || !dose || !date) {
         throw new Error('All fields are mandatory!');
       }
+
+      let formatedDate = format(
+        parseISO(format(new Date(date), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
+        'yyyy-MM-dd'
+      );
+
+
       const { values: transactions }: any = await this.db?.query(
         'SELECT id FROM transactions'
       );
@@ -428,7 +451,7 @@ export class DatabaseService {
 
       await this.db?.query(
         'UPDATE transactions SET sugarLevel = ?, action = ?, date = ?, dose = ? WHERE id = ?',
-        [sugarLevel, action, date, dose, lastId]
+        [sugarLevel, action, formatedDate, dose, lastId]
       );
     } catch (err) {
       throw new Error('Something went wrong add transaction' + err);

@@ -32,28 +32,28 @@
 
   <div *ngIf="selectMode === 'Custom'">
     <ion-grid>
-      <ion-row>
+      <!-- <ion-row>
         <ion-col>
           <div class="ion-text-center">
             <h5>
-              {{startDate}}
+              {{startDate | date : "mediam"}}
             </h5>
           </div>
         </ion-col>
         <ion-col>
           <div class="ion-text-center">
             <h5>
-              {{endDate}}
+              {{endDate | date : "mediam"}}
             </h5>
           </div>
         </ion-col>
-      </ion-row>
+      </ion-row> -->
       <ion-row>
         <ion-col size="6">
           <ion-item id="From" lines="none">
             <ion-icon icon="calendar-outline" color="primary"></ion-icon>
             <ion-text style="font-size:1rem;" class="ion-text-center">
-              {{startDate | date: "mediumDate"}}
+              {{startDate | date: "yyyy-MM-dd"}}
             </ion-text>
           </ion-item>
         </ion-col>
@@ -62,7 +62,7 @@
           <ion-item id="To" lines="none">
             <ion-icon icon="calendar-outline" color="primary"></ion-icon>
             <ion-text style="font-size:1rem;">
-              {{endDate | date:"mediumDate"}}
+              {{endDate | date:"yyyy-MM-dd"}}
             </ion-text>
           </ion-item>
         </ion-col>
@@ -75,8 +75,8 @@
     <ion-modal trigger="From">
       <ng-template>
         <ion-content>
-          <ion-datetime #todateTime presentation="date" [value]="startDate" size="cover"
-            (ionChange)="customFromDate(todateTime.value)" showDefaultButtons="true"
+          <ion-datetime #todateTime presentation="date" [showDefaultTitle]="true" [value]="startDate" size="cover"
+            (ionChange)="customFromDate(todateTime.value)" [showDefaultButtons]="true"
             (ionCancel)="fromShowPicker = false;">
           </ion-datetime>
         </ion-content>
@@ -85,8 +85,8 @@
     <ion-modal trigger="To">
       <ng-template>
         <ion-content>
-          <ion-datetime #fromdateTime presentation="date" [value]="endDate" size="cover"
-            (ionChange)="customToDate(fromdateTime.value)" showDefaultButtons="true"
+          <ion-datetime #fromdateTime presentation="date" [showDefaultTitle]="true" [value]="endDate" size="cover"
+            (ionChange)="customToDate(fromdateTime.value)" [showDefaultButtons]="true"
             (ionCancel)="toShowPicker = false;">
           </ion-datetime>
         </ion-content>
