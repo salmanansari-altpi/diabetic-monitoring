@@ -102,9 +102,8 @@ export class HomePage implements OnInit {
   async createSugarAlert() {
     return await this.alertController.create({
       header: `It's ${this.eventName} time`,
-      subHeader: 'A Sub Header Is Optional',
-      message: 'A message should be a short, complete sentence.',
-      inputs: [{ placeholder: 'Ex: 120', type: 'number', name: 'sugarlvl' }],
+      message: 'Please enter the sugarLevel.',
+      inputs: [{ placeholder: '20', type: 'number', name: 'sugarlvl' }],
       buttons: [{ text: 'Ok', role: 'ok' }],
       animated: true,
     });
@@ -162,7 +161,7 @@ export class HomePage implements OnInit {
       sugarLevel: this.sugarLevel,
       dose: this.insulin,
       date: new Date().toString(),
-      action: 'success',
+      action: 'Success',
     };
     console.log('data for update Transaction ', data);
     await this.db.updateTransaction(data);

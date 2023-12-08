@@ -8,29 +8,24 @@
 </ion-header>
 
 <ion-content [scrollY]="true" [fullscreen]="true" class="ion-padding">
-  <ion-grid>
-    <ion-row>
-      <ion-col>EventName</ion-col>
-      <ion-col>Sugar lvl</ion-col>
-      <ion-col>Insulin</ion-col>
-      <ion-col>Action</ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-grid>
-    <ion-row class="item" *ngFor="let data of transactions">
-      <ion-col>
-        <ion-label>{{ data.eventName }}</ion-label>
-      </ion-col>
 
-      <ion-col>
-        <ion-label>{{ data.sugarLevel }}</ion-label>
-      </ion-col>
-      <ion-col>
-        <ion-label>{{ data.dose }}</ion-label>
-      </ion-col>
-      <ion-col>
-        <ion-label>{{ data.action }}</ion-label>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+  <ion-card *ngFor="let data of transactions" class="transaction-card">
+    <ion-card-header>
+      <ion-card-subtitle>
+        <ion-text>{{ data.date | date: 'medium' }}</ion-text>
+        <ion-text class="action">{{ data.action }}</ion-text>
+      </ion-card-subtitle>
+      <ion-card-title>
+        {{ data.eventName }}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h6>
+        Sugar Level {{ data.sugarLevel }}
+      </h6>
+      <h1>Insulin Taken {{ data.dose }}</h1>
+    </ion-card-content>
+  </ion-card>
+  <div class="extrapart">this is extra part for to show the transaction</div>
 </ion-content>

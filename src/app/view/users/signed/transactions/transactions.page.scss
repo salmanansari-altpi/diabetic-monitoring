@@ -20,3 +20,12 @@ ion-modal {
     --background: transparent;
   }
 }
+.extrapart {
+  height: 5rem;
+  visibility: hidden;
+}
+
+ion-card-subtitle {
+  display: flex;
+  justify-content: space-between;
+}

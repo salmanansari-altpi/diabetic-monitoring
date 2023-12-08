@@ -397,7 +397,7 @@ export class DatabaseService {
       }
       const transaction = await this.db?.query(
         'INSERT INTO transactions (eventName, sugarLevel, action, date, dose) VALUES ( ?, ?, ?, ?, ?)',
-        [eventName, 0, 'reject', date, 0]
+        [eventName, 0, 'Reject', date, 0]
       );
       console.log('transactions hass been added with this detail : ', data);
       return transaction;
