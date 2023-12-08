@@ -29,3 +29,34 @@ ion-card-subtitle {
   display: flex;
   justify-content: space-between;
 }
+
+ion-card-title {
+  font-size: x-large;
+  font-weight: 700;
+}
+h1 {
+  font-size: larger;
+  font-weight: 700;
+}
+
+ion-item {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  ion-segment {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    ion-segment-button {
+      font-size: 10px;
+      min-width: auto;
+
+      --indicator-color: transparent;
+      --color-checked: #fff;
+      --background-checked: var(--ion-color-primary);
+      --indicator-height: 4px;
+      --border-radius: 0.5rem;
+      --indicator-transition: all 0.3s ease;
+    }
+  }
+}

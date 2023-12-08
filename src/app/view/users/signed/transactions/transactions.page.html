@@ -7,7 +7,98 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [scrollY]="true" [fullscreen]="true" class="ion-padding">
+<ion-content [scrollY]="true" class="ion-padding">
+
+
+  <ion-item lines="none">
+    <ion-segment #filter (ionChange)="dateForFilter(filter)" value="Today">
+      <ion-segment-button value="Today">
+        <ion-label>Today</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Week">
+        <ion-label>Week</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Month">
+        <ion-label>Month</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Year">
+        <ion-label>Year</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Custom">
+        <ion-label>Custom</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-item>
+
+  <div *ngIf="selectMode === 'Custom'">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="ion-text-center">
+            <h5>
+              {{startDate}}
+            </h5>
+          </div>
+        </ion-col>
+        <ion-col>
+          <div class="ion-text-center">
+            <h5>
+              {{endDate}}
+            </h5>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item id="From" lines="none">
+            <ion-icon icon="calendar-outline" color="primary"></ion-icon>
+            <ion-text style="font-size:1rem;" class="ion-text-center">
+              {{startDate | date: "mediumDate"}}
+            </ion-text>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size="6">
+          <ion-item id="To" lines="none">
+            <ion-icon icon="calendar-outline" color="primary"></ion-icon>
+            <ion-text style="font-size:1rem;">
+              {{endDate | date:"mediumDate"}}
+            </ion-text>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="full" (click)="applyCustom()">Apply</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-modal trigger="From">
+      <ng-template>
+        <ion-content>
+          <ion-datetime #todateTime presentation="date" [value]="startDate" size="cover"
+            (ionChange)="customFromDate(todateTime.value)" showDefaultButtons="true"
+            (ionCancel)="fromShowPicker = false;">
+          </ion-datetime>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+    <ion-modal trigger="To">
+      <ng-template>
+        <ion-content>
+          <ion-datetime #fromdateTime presentation="date" [value]="endDate" size="cover"
+            (ionChange)="customToDate(fromdateTime.value)" showDefaultButtons="true"
+            (ionCancel)="toShowPicker = false;">
+          </ion-datetime>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  </div>
+
+
+
+
+
+
 
 
   <ion-card *ngFor="let data of transactions" class="transaction-card">

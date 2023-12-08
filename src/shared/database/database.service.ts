@@ -379,11 +379,20 @@ export class DatabaseService {
   }
 
   async getTransactions(data: any) {
-    const { date } = data;
+    let { startDate, endDate } = data;
+    startDate = new Date(`${startDate} 00:00:00`).toString();
+    endDate = new Date(`${endDate} 23:59:59`).toString();
+
+    console.log('b s', startDate);
+    console.log('e s: ', endDate);
     try {
-      return await this.db?.query('SELECT * FROM transactions WHERE date = ?', [
-        date,
-      ]);
+      const res = await this.db?.query(
+        // 'SELECT * FROM transactions WHERE date BETWEEN ? and ?',
+        'SELECT * FROM transactions WHERE  date >= ?  and date <= ?',
+        [startDate, endDate]
+      );
+      console.log('transsss back: ', res);
+      return res;
     } catch (err) {
       throw new Error('Something went wrong Getting Transaction' + err);
     }
