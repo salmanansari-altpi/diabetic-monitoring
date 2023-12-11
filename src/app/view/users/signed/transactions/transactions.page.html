@@ -104,7 +104,7 @@
   <ion-card *ngFor="let data of transactions" class="transaction-card">
     <ion-card-header>
       <ion-card-subtitle>
-        <ion-text>{{ data.date | date: 'medium' }}</ion-text>
+        <ion-text>{{ data.date | date: 'longDate' }}</ion-text>
         <ion-text class="action">{{ data.action }}</ion-text>
       </ion-card-subtitle>
       <ion-card-title>

@@ -101,17 +101,7 @@ export class TransactionsPage implements OnInit {
     this.filter(today.toString());
   }
 
-  async filter(startDate: any) {
-    let endDate = new Date().toString();
-
-    let data = { startDate, endDate };
-
-    const res = await this.db.getTransactions(data);
-    console.log("res trans: ", res);
-
-    this.transactions = res?.values?.reverse();
-    console.log("trans: ", this.transactions);
-  }
+  
 
   setCustom() {
     let today = new Date();
@@ -145,15 +135,27 @@ export class TransactionsPage implements OnInit {
 
     this.toShowPicker = false;
   }
-  applyCustom() {
+ async applyCustom() {
     let startDate = this.startDate.toString();
-    let endDate = this.startDate.toString();
+    let endDate = this.endDate.toString();
     console.log("from date :", startDate);
     console.log("To date :", this.endDate);
     const data = { 
       startDate,
       endDate,
     };
-    this.db.getTransactions(data);
+    const res = await this.db.getTransactions(data);
+    this.transactions = res?.values?.reverse();
+  }
+  async filter(startDate: any) {
+    let endDate = new Date().toString();
+
+    let data = { startDate, endDate };
+
+    const res = await this.db.getTransactions(data);
+    console.log("res trans: ", res);
+
+    this.transactions = res?.values?.reverse();
+    console.log("trans: ", this.transactions);
   }
 }
