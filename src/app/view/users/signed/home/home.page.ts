@@ -36,12 +36,12 @@ export class HomePage implements OnInit {
     // CLICKED
     await LocalNotifications.addListener(
       'localNotificationActionPerformed',
-      (noti: any) => {
+      async (noti: any) => {
         console.log(noti);
         this.eventName = noti.notification.title;
         this.deletelistener = false;
-        console.log("the noti is click",this.deletelistener)
-        this.sugarAlertHandler();
+        console.log('the noti is click', this.deletelistener);
+        await this.sugarAlertHandler();
       }
     );
 
@@ -50,9 +50,8 @@ export class HomePage implements OnInit {
       'localNotificationReceived',
       async (notification) => {
         Haptics.vibrate({ duration: 1000 });
-        this.deletelistener = true; 
-        console.log("the noti is recevie ",this.deletelistener)
-
+        this.deletelistener = true;
+        console.log('the noti is recevie ', this.deletelistener);
 
         const data = {
           eventName: notification.title,
@@ -61,10 +60,10 @@ export class HomePage implements OnInit {
         await this.db.addTransaction(data);
       }
     ).then(() => {
-      setTimeout(() => {
+      setTimeout(async () => {
         if (this.deletelistener === true) {
-          console.log("after 2.5 seconds")
-          this.removeListener();
+          console.log('after 2.5 seconds');
+          await this.removeListener();
         }
       }, 2500);
     });
@@ -73,7 +72,7 @@ export class HomePage implements OnInit {
   }
 
   async removeListener() {
-    console.log("removing listener in function of removeListener()")
+    console.log('removing listener in function of removeListener()');
     await LocalNotifications.removeAllDeliveredNotifications();
     await LocalNotifications.removeAllListeners();
   }
