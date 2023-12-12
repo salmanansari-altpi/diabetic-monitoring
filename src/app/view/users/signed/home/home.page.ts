@@ -39,7 +39,7 @@ export class HomePage implements OnInit {
       async (noti: any) => {
         console.log(noti);
         this.eventName = noti.notification.title;
-        this.deletelistener = false;
+        
         console.log('the noti is click', this.deletelistener);
         await this.sugarAlertHandler();
       }
@@ -49,7 +49,8 @@ export class HomePage implements OnInit {
     await LocalNotifications.addListener(
       'localNotificationReceived',
       async (notification) => {
-        Haptics.vibrate({ duration: 1000 });
+
+        // Haptics.vibrate({ duration: 1000 });
         this.deletelistener = true;
         console.log('the noti is recevie ', this.deletelistener);
 
@@ -57,17 +58,28 @@ export class HomePage implements OnInit {
           eventName: notification.title,
           date: new Date().toString(),
         };
-        await this.db.addTransaction(data);
-      }
-    ).then(() => {
-      setTimeout(async () => {
-        if (this.deletelistener === true) {
-          console.log('after 2.5 seconds');
-          await this.removeListener();
-        }
-      }, 2500);
-    });
 
+        await this.db.addTransaction(data).then(() => {
+            setTimeout(async () => {
+              if (this.deletelistener === true) {
+                console.log('after 2.5 seconds');
+                await this.removeListener();
+              }
+            }, 10000);
+          });
+      }
+    )
+    // 
+
+    // if(this.deletelistener === true){
+    //   setTimeout(async () => {
+    //     if (this.deletelistener === true) {
+    //       console.log('after 2.5 seconds');
+    //       await this.removeListener();
+    //       this.deletelistener = false;
+    //     }
+    //   }, 2500);
+    // }
     this.getPendingNotifications();
   }
 
