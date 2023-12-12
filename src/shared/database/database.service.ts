@@ -411,15 +411,18 @@ export class DatabaseService {
 
   async addTransaction(data: any) {
     try {
-      const { eventName, date } = data;
-      if (!eventName || !date) {
+      const { eventName, sugarLevel, action, dose, date, flag } = data;
+
+      if (!flag) return;
+
+      if (!eventName || !date || !sugarLevel || !action || !dose) {
         throw new Error('All fields are mandatory!');
       }
 
       let formatedDate = format(
-          parseISO(format(new Date(date), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
-          'yyyy-MM-dd'
-        );
+        parseISO(format(new Date(date), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
+        'yyyy-MM-dd'
+      );
       const transaction = await this.db?.query(
         'INSERT INTO transactions (eventName, sugarLevel, action, date, dose) VALUES ( ?, ?, ?, ?, ?)',
         [eventName, 0, 'Reject', formatedDate, 0]
@@ -442,7 +445,6 @@ export class DatabaseService {
         parseISO(format(new Date(date), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
         'yyyy-MM-dd'
       );
-
 
       const { values: transactions }: any = await this.db?.query(
         'SELECT id FROM transactions'

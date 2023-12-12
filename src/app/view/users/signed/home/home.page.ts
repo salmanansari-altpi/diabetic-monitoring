@@ -7,8 +7,6 @@ import {
 import { AlertController } from '@ionic/angular';
 import { DatabaseService } from 'src/shared/database/database.service';
 import { NotificationService } from 'src/shared/notification/notification.service';
-import { App } from '@capacitor/app';
-import { TimeoutConfig } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +26,7 @@ export class HomePage implements OnInit {
 
   deletelistener: any;
 
-  snoozeCount: number;
+  snoozeCount: number = 0;
 
   setTimeOutId: number | undefined;
 
@@ -77,14 +75,20 @@ export class HomePage implements OnInit {
           flag: false,
         };
 
+        setTimeout(() => {
+          console.log('inside recevied');
+        }, 2000);
+
         await this.db.addTransaction(data).then(() => {
+          console.log("add transaction has completed");
           this.setTimeOutId = Number(
             setTimeout(async () => {
               if (this.deletelistener === true) {
                 console.log('after 20000 seconds');
                 this.snoozeCount = this.snoozeCount + 1;
-                await this.removeListener().then(
-                  async () => await this.snoozeNoti(this.snoozeCount)
+                console.log('snooze count: ' + this.snoozeCount);
+                await this.removeListener().then(() =>
+                  this.snoozeNoti(this.snoozeCount)
                 );
 
                 if (notification.id === 103) {
@@ -99,7 +103,7 @@ export class HomePage implements OnInit {
                   await this.db.addTransaction(data);
                 }
               }
-            }, 20000)
+            }, 5000)
           );
         });
       }
@@ -118,52 +122,81 @@ export class HomePage implements OnInit {
   }
 
   async snoozeNoti(data: number) {
-    if (data === 1) {
+    // if (data === 1) {
+    //   const options: ScheduleOptions = {
+    //     notifications: [
+    //       {
+    //         id: 101,
+    //         title: this.eventName,
+    //         body: this.eventName,
+    //         schedule: {
+    //           // at: new Date(new Date().getTime() + 50000),
+    //           at: new Date(new Date().getTime() + 25000),
+    //           count: 1,
+    //           allowWhileIdle: true,
+    //         },
+    //         channelId: 'diabetic',
+    //       },
+    //     ],
+    //   };
+    //   await LocalNotifications.schedule(options);
+    // } else if (data === 2) {
+    //   const options: ScheduleOptions = {
+    //     notifications: [
+    //       {
+    //         id: 102,
+    //         title: this.eventName,
+    //         body: this.eventName,
+    //         schedule: {
+    //           // at: new Date(new Date().getTime() + 100000),
+    //           at: new Date(new Date().getTime() + 30000),
+    //           count: 1,
+    //           allowWhileIdle: true,
+    //         },
+    //         channelId: 'diabetic',
+    //       },
+    //     ],
+    //   };
+    //   await LocalNotifications.schedule(options);
+    // } else if(data === 3 ) {
+    //   this.snoozeCount = 0;
+    //   const options: ScheduleOptions = {
+    //     notifications: [
+    //       {
+    //         id: 103,
+    //         title: this.eventName,
+    //         body: this.eventName,
+    //         schedule: {
+    //           // at: new Date(new Date().getTime() + 1500000),
+    //           at: new Date(new Date().getTime() + 40000),
+    //           count: 1,
+    //           allowWhileIdle: true,
+    //         },
+    //         channelId: 'diabetic',
+    //       },
+    //     ],
+    //   };
+    //   await LocalNotifications.schedule(options);
+
+    // }
+    // const ids = [101, 102, 103];
+    
+    let time = new Date(new Date().getTime()) 
+    for (let i = 1; i <= 3; i++) {
+      // const time = (i + 1) + '00000';
+      // console.log('delay time: ', time);
+
+      time = new Date( new Date(time).getTime() + 1*10000);
+
       const options: ScheduleOptions = {
         notifications: [
           {
-            id: 101,
-            title: this.eventName,
-            body: this.eventName,
-            schedule: {
-              // at: new Date(new Date().getTime() + 50000),
-              at: new Date(new Date().getTime() + 2500),
-              count: 1,
-              allowWhileIdle: true,
-            },
-            channelId: 'diabetic',
-          },
-        ],
-      };
-      await LocalNotifications.schedule(options);
-    } else if (data === 2) {
-      const options: ScheduleOptions = {
-        notifications: [
-          {
-            id: 102,
+            id: 100 + i,
             title: this.eventName,
             body: this.eventName,
             schedule: {
               // at: new Date(new Date().getTime() + 100000),
-              at: new Date(new Date().getTime() + 5000),
-              count: 1,
-              allowWhileIdle: true,
-            },
-            channelId: 'diabetic',
-          },
-        ],
-      };
-      await LocalNotifications.schedule(options);
-    } else {
-      const options: ScheduleOptions = {
-        notifications: [
-          {
-            id: 103,
-            title: this.eventName,
-            body: this.eventName,
-            schedule: {
-              // at: new Date(new Date().getTime() + 1500000),
-              at: new Date(new Date().getTime() + 10000),
+              at:  time,
               count: 1,
               allowWhileIdle: true,
             },
@@ -173,7 +206,6 @@ export class HomePage implements OnInit {
       };
       await LocalNotifications.schedule(options);
     }
-    this.snoozeCount = 0;
   }
 
   async removeListener() {
