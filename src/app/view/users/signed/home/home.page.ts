@@ -149,7 +149,7 @@ export class HomePage implements OnInit {
   async createInsulinAlert() {
     return await this.alertController.create({
       header: `According to your sugar level.`,
-      message: `You have to take ${this.insulin}.`,
+      message: `Insulin Intake ${this.insulin} Units.`,
       buttons: [{ text: 'Ok', role: 'ok' }],
       animated: true,
     });
