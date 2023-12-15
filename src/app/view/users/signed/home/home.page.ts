@@ -5,6 +5,7 @@ import { AlertController } from '@ionic/angular';
 import { DatabaseService } from 'src/shared/database/database.service';
 import { NotificationService } from 'src/shared/notification/notification.service';
 import { App } from '@capacitor/app';
+import { SnoozeService } from 'src/shared/snoozeNoti/snooze.service';
 
 @Component({
   selector: 'app-home',
@@ -27,7 +28,8 @@ export class HomePage implements OnInit {
   constructor(
     private alertController: AlertController,
     private db: DatabaseService,
-    private localNotification: NotificationService
+    private localNotification: NotificationService,
+    private snooze: SnoozeService
   ) {
     this.fetchUser();
   }
@@ -39,47 +41,85 @@ export class HomePage implements OnInit {
       async (noti: any) => {
         console.log(noti);
         this.eventName = noti.notification.title;
-        
-        console.log('the noti is click', this.deletelistener);
-        await this.sugarAlertHandler();
+        let date = noti.notification.schedule.at;
+
+        if (noti.actionId == 'tap') {
+          LocalNotifications.cancel({
+            notifications: [
+              {
+                id: 101,
+              },
+            ],
+          });
+          this.removeListener().then(async () => {
+            await this.sugarAlertHandler();
+          });
+        } else if (noti.actionId == '15') {
+          let data = {
+            id: 101,
+            title: this.eventName,
+            body: this.eventName,
+            date: new Date(new Date().getTime() + 15 * 1000).toString(),
+          };
+          this.snooze.scheduleNoti(data);
+        }
+        //   else if (noti.actionId == '30') {
+        //     let data ={
+        //       id:102,
+        //       title: this.eventName,
+        //       body: this.eventName,
+        //       date: new Date(new Date().getTime() + 30*1000).toString(),
+        //     }
+        //     this.snooze.scheduleNoti(data)
+        // }
+        else if (noti.actionId == 'reject') {
+          let data = {
+            eventName: noti.notification.title,
+            date: new Date().toString(),
+            sugarLevel: 1,
+            dose: 1,
+            action: 'Rejected',
+          };
+          console.log('rejected data from FE', data);
+
+          LocalNotifications.cancel({
+            notifications: [
+              {
+                id: 101,
+              },
+            ],
+          });
+          this.removeListener().then(async () => {
+            this.db.addTransaction(data);
+          });
+        }
       }
     );
 
     // RECIEVED
-    await LocalNotifications.addListener(
-      'localNotificationReceived',
-      async (notification) => {
+    // await LocalNotifications.addListener(
+    //   'localNotificationReceived',
+    //   async (notification) => {
+    // Haptics.vibrate({ duration: 1000 });
+    // this.deletelistener = true;
+    // console.log('the noti is recevie ', this.deletelistener);
 
-        // Haptics.vibrate({ duration: 1000 });
-        this.deletelistener = true;
-        console.log('the noti is recevie ', this.deletelistener);
+    // const data = {
+    //   eventName: notification.title,
+    //   date: new Date().toString(),
+    // };
 
-        const data = {
-          eventName: notification.title,
-          date: new Date().toString(),
-        };
-
-        await this.db.addTransaction(data).then(() => {
-            setTimeout(async () => {
-              if (this.deletelistener === true) {
-                console.log('after 2.5 seconds');
-                await this.removeListener();
-              }
-            }, 10000);
-          });
-      }
-    )
-    // 
-
-    // if(this.deletelistener === true){
+    // await this.db.addTransaction(data).then(() => {
     //   setTimeout(async () => {
     //     if (this.deletelistener === true) {
     //       console.log('after 2.5 seconds');
     //       await this.removeListener();
-    //       this.deletelistener = false;
     //     }
-    //   }, 2500);
+    //   }, 10000);
+    // });
     // }
+    // );
+
     this.getPendingNotifications();
   }
 
@@ -123,8 +163,8 @@ export class HomePage implements OnInit {
   async sugarAlertHandler() {
     this.sugarlvlAlert = await this.createSugarAlert();
     await this.sugarlvlAlert.present();
-    await LocalNotifications.removeAllDeliveredNotifications();
-    await LocalNotifications.removeAllListeners();
+    // await LocalNotifications.removeAllDeliveredNotifications();
+    // await LocalNotifications.removeAllListeners();
 
     // Waiting for the alert to be dismissed
     const { role, data } = await this.sugarlvlAlert.onDidDismiss();
@@ -175,7 +215,7 @@ export class HomePage implements OnInit {
       action: 'Success',
     };
     console.log('data for update Transaction ', data);
-    await this.db.updateTransaction(data);
+    await this.db.addTransaction(data);
     this.sugarLevel = 0;
     this.insulin = '';
   }

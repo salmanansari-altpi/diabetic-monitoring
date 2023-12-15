@@ -42,11 +42,13 @@ export class SettingPage implements OnInit {
   }
 
   async fetchEvents() {
+    // this.listener()
     this.result = await this.db.getAllEvents();
     this.result = this.result[0]?.values.forEach(
       (item: any) => (item.eventTime = new Date(item?.eventTime))
     );
     console.log('All Events in Settings: ', this.result);
+    
   }
 
   async toggleEditHandler(data: any) {
@@ -125,4 +127,17 @@ export class SettingPage implements OnInit {
   leaveAnimation = (baseEl: HTMLElement) => {
     return this.enterAnimation(baseEl).direction('reverse');
   };
+
+
+
+
+  // async listener() {
+  //   await LocalNotifications.removeAllListeners()
+  //   await LocalNotifications.addListener(
+  //     'localNotificationActionPerformed',
+  //     async (noti: any) => {
+  //       console.log(' the listener is running in transaction');
+  //     }
+  //   );
+  // }
 }

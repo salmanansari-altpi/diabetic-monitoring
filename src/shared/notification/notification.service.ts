@@ -11,6 +11,7 @@ import { DatabaseService } from "../database/database.service";
 })
 export class NotificationService {
   channelId: string = "diabetic";
+  actionTypeId: string = 'chart_id';
   constructor(private db: DatabaseService) {}
 
   async checkAllAndSchedule() {
@@ -87,6 +88,19 @@ export class NotificationService {
     const { id, title, body, eventName, date } = data;
     let dateObj = date;
 
+    LocalNotifications.registerActionTypes({
+      types: [
+        {
+          id: this.actionTypeId,
+          actions: [
+            { id: 'reject', title: 'Reject' },
+            { id: '15', title: 'Snooze' },
+            // { id: '30', title: 'Snooze 30min' },
+          ],
+        },
+      ],
+    });
+
     const options: ScheduleOptions = {
       notifications: [
         {
@@ -99,6 +113,9 @@ export class NotificationService {
             count: 1,
             allowWhileIdle: true,
           },
+          ongoing:true,
+          // autoCancel: true,
+          actionTypeId: this.actionTypeId,
           channelId: this.channelId,
         },
       ],

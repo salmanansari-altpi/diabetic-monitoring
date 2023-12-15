@@ -411,21 +411,31 @@ export class DatabaseService {
 
   async addTransaction(data: any) {
     try {
-      const { eventName, date } = data;
-      if (!eventName || !date) {
-        throw new Error('All fields are mandatory!');
+      let { eventName, date, sugarLevel, action, dose } = data;
+      console.log('rejected/success data from BE', data);
+      if (action === 'Rejected') {
+        if (!eventName || !date || !action) {
+          throw new Error('All fields are mandatory!');
+        }
+        dose = 0;
+        sugarLevel = 0;
+      }
+      if (action === 'Success') {
+        if (!eventName || !date || !sugarLevel || !action || !dose) {
+          throw new Error('All fields are mandatory!');
+        }
       }
 
       let formatedDate = format(
-          parseISO(format(new Date(date), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
-          'yyyy-MM-dd'
-        );
+        parseISO(format(new Date(date), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
+        'yyyy-MM-dd'
+      );
       const transaction = await this.db?.query(
         'INSERT INTO transactions (eventName, sugarLevel, action, date, dose) VALUES ( ?, ?, ?, ?, ?)',
-        [eventName, 0, 'Reject', formatedDate, 0]
+        [eventName, sugarLevel, action, formatedDate, dose]
       );
       console.log('transactions hass been added with this detail : ', data);
-      return transaction;
+      return;
     } catch (err) {
       throw new Error('Something went wrong add transaction' + err);
     }
@@ -442,7 +452,6 @@ export class DatabaseService {
         parseISO(format(new Date(date), 'yyyy-MM-dd') + 'T09:00:00.000Z'),
         'yyyy-MM-dd'
       );
-
 
       const { values: transactions }: any = await this.db?.query(
         'SELECT id FROM transactions'
