@@ -112,6 +112,17 @@ export class SettingPage implements OnInit {
     this.router.navigateByUrl('view/users/signed/events');
   }
 
+  // delete event
+  async deleteEvent(data: any) {
+    console.log(data);
+    // const id = data.deleteId.el.deleteId;
+    await this.db.deleteEvents(data.eventName);
+    await this.updateNotification();
+    this.fetchEvents();
+    await LocalNotifications.removeAllListeners();
+    await this.listener();
+  }
+
   // ANIMATION
   enterAnimation = (baseEl: HTMLElement) => {
     const root = baseEl.shadowRoot;

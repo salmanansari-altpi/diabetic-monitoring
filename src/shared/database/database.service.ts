@@ -158,20 +158,25 @@ export class DatabaseService {
         [eventName]
       );
 
+      console.log('1.1 bc: ', event);
+
       const eventInfo = {
         id: event[0].id,
         eventName: event[0].eventName,
         eventTime: event[0].eventTime,
       };
+      console.log('1.2 bc: ', eventInfo);
 
       const events = await this.db?.query(
         'select * from eventMasters WHERE eventId = ?',
         [event[0].id]
       );
 
+      console.log('1.3 bc: ', events);
+
       return [eventInfo, events];
     } catch (err) {
-      throw new Error('Something went wrong load sugar ranges: ' + err);
+      throw new Error('Something went While getting events: ' + err);
     }
   }
 
@@ -181,6 +186,8 @@ export class DatabaseService {
         'SELECT * FROM events'
       );
 
+      console.log('1 bc', event);
+
       const allEventsInfo = event.map((cur: any) => {
         return {
           eventId: cur.id,
@@ -188,9 +195,14 @@ export class DatabaseService {
           eventTime: cur.eventTime,
         };
       });
+
+      console.log('2 bc', allEventsInfo);
+
       const { values: events }: any = await this.db?.query(
         'select * from eventMasters'
       );
+
+      console.log('2 bc: ', events);
 
       return [allEventsInfo, events];
     } catch (err) {
@@ -365,6 +377,23 @@ export class DatabaseService {
     } catch (err: any) {
       console.log('Something went wrong Update events: ' + err.message);
       return err.message;
+    }
+  }
+
+  async deleteEvents(eventName: any) {
+    try {
+      const { values: data }: any = await this.db?.query(
+        'SELECT id FROM events WHERE eventName = ?',
+        [eventName]
+      );
+      console.log('deleting data bc: ', data);
+      await this.db?.query('DELETE FROM events WHERE id = ?', [data[0].id]);
+      await this.db?.query('DELETE FROM eventMasters WHERE eventId = ?', [
+        data[0].id,
+      ]);
+      return;
+    } catch (err) {
+      throw new Error('Something went wrong while Deleting Events: ' + err);
     }
   }
 

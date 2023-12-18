@@ -3,7 +3,7 @@ import { AnimationController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { DatabaseService } from 'src/shared/database/database.service';
-import { NotificationService } from "../../../../../shared/notification/notification.service";
+import { NotificationService } from '../../../../../shared/notification/notification.service';
 
 @Component({
   selector: 'app-events',
@@ -36,12 +36,17 @@ export class EventsPage implements OnInit {
     private localNotification: NotificationService,
     private route: ActivatedRoute
   ) {
-    this.eventName = 'Breakfast';
-    this.fetchAllEventNames();
+    
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.eventName = 'Breakfast';
+    this.fetchAllEventNames();
+    const { values: data }: any = await this.db.getEventsList();
+    console.log("thsi is data of ng oninti ", data)
+    this.eventName = data[0].eventName;
     this.fetchAllEvents(this.eventName);
+    console.log('event page started');
   }
 
   addCustomEvent() {
@@ -54,7 +59,7 @@ export class EventsPage implements OnInit {
     const { values: data }: any = await this.db.getEventsList();
     this.dropdownEvents = data;
     console.log('dropdown: ', this.dropdownEvents);
-    this.eventName = '';
+    this.eventName = "";
   }
 
   // SELECT EVENT
@@ -92,13 +97,14 @@ export class EventsPage implements OnInit {
   }
 
   async fetchAllEvents(name: string) {
+    console.log("event name in fAE : ", name);
     this.allEvents = await this.db.getEvents(name);
     this.time = this.allEvents[0].eventTime;
   }
 
   // handling Next and setting the notification
   async handleNext() {
-    await this.localNotification.checkAllAndSchedule()
+    await this.localNotification.checkAllAndSchedule();
     this.router.navigateByUrl('view/users/signed/home');
   }
 

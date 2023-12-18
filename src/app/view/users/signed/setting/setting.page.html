@@ -14,62 +14,32 @@
       <ion-item>
         <div class="time">
           <ion-label>Time: </ion-label>
-          <div
-            id="etime"
-            style="padding-top: 1rem; margin-left: 2vw; font-size: 1.4rem"
-          >
+          <div id="etime" style="padding-top: 1rem; margin-left: 2vw; font-size: 1.4rem">
             <ion-text> {{ editTime | date : 'shortTime'}} </ion-text>
           </div>
         </div>
-        <ion-modal
-          trigger="etime"
-          [enterAnimation]="enterAnimation"
-          [leaveAnimation]="leaveAnimation"
-        >
+        <ion-modal trigger="etime" [enterAnimation]="enterAnimation" [leaveAnimation]="leaveAnimation">
           <ng-template>
             <ion-content>
-              <ion-datetime
-                #time
-                presentation="time"
-                size="cover"
-                [preferWheel]="true"
-                (ionChange)="selectTime(time.value)"
-                showDefaultButtons="true"
-                (ionCancel)="!showTime"
-              >
+              <ion-datetime #time presentation="time" size="cover" [preferWheel]="true"
+                (ionChange)="selectTime(time.value)" showDefaultButtons="true" (ionCancel)="!showTime">
               </ion-datetime>
             </ion-content>
           </ng-template>
         </ion-modal>
       </ion-item>
       <ion-item>
-        <ion-input
-          type="number"
-          label="Start Range: "
-          placeholder="starting range"
-          [(ngModel)]="editStartRange"
-        ></ion-input>
+        <ion-input type="number" label="Start Range: " placeholder="starting range"
+          [(ngModel)]="editStartRange"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input
-          type="number"
-          label="End Range: "
-          placeholder="ending range"
-          [(ngModel)]="editEndRange"
-        ></ion-input>
+        <ion-input type="number" label="End Range: " placeholder="ending range" [(ngModel)]="editEndRange"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input
-          type="number"
-          label="Insulin "
-          placeholder="Insulin dose"
-          [(ngModel)]="insulin"
-        ></ion-input>
+        <ion-input type="number" label="Insulin " placeholder="Insulin dose" [(ngModel)]="insulin"></ion-input>
       </ion-item>
     </ion-list>
-    <ion-button class="btn" expand="full" (click)="editHandler()"
-      >Done</ion-button
-    >
+    <ion-button class="btn" expand="full" (click)="editHandler()">Done</ion-button>
   </ng-container>
 
   <ng-container *ngIf="!showEdit">
@@ -77,7 +47,13 @@
       <ion-row>
         <ion-col> {{ sdata.eventName}} </ion-col>
         <ion-col> {{ sdata.eventTime | date: 'shortTime' }} </ion-col>
+        <ion-col>
+          <ion-button class="btn" (click)="deleteEvent({ eventName: sdata.eventName })">Delete</ion-button>
+        </ion-col>
       </ion-row>
+      <!-- <ion-row>
+
+      </ion-row> -->
       <ion-row>
         <ion-col> starting Range </ion-col>
         <ion-col> Ending Range </ion-col>
@@ -96,21 +72,13 @@
             <ion-text> {{ ldata?.dose}} </ion-text>
           </ion-col>
           <ion-col>
-            <ion-button
-              class="btn"
-              fill="clear"
-              [id]="ldata?.id"
-              #id
-              (click)="toggleEditHandler({ id })"
-              >Edit</ion-button
-            >
+            <ion-button class="btn" fill="clear" [id]="ldata?.id" #id
+              (click)="toggleEditHandler({ id })">Edit</ion-button>
           </ion-col>
         </ion-row>
       </ng-container>
     </ion-grid>
-    <ion-button fill="solid" (click)="handleAddMoreEvent()"
-      >Add More Events</ion-button
-    >
+    <ion-button fill="solid" (click)="handleAddMoreEvent()">Add More Events</ion-button>
   </ng-container>
   <div class="extrapart">this is extra part for to show the transaction</div>
 </ion-content>

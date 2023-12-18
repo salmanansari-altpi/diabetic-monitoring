@@ -1,0 +1,6 @@
+1. User create 
+2. Custom event - Add, Delete
+3. Sugar range  - Add, Update, Delete
+4. Notification - Snooze, Reject, Accept
+5. Send Insulin
+6. Transaction - Filter by Date
