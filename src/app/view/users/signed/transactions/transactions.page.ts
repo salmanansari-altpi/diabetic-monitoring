@@ -3,6 +3,8 @@ import { DatabaseService } from 'src/shared/database/database.service';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { SnoozeService } from 'src/shared/snoozeNoti/snooze.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-transactions',
@@ -11,6 +13,12 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 })
 export class TransactionsPage implements OnInit {
   transactions: any;
+
+  eventName: any;
+  insulinAlert: any;
+  sugarlvlAlert: any;
+  insulin: any;
+  sugarLevel: any;
 
   //variable
   yearTransactionHistory: any; // Transaction history of the all the users for the last year
@@ -23,12 +31,19 @@ export class TransactionsPage implements OnInit {
   startDate: any;
   endDate: any;
 
-  constructor(private db: DatabaseService) {}
+  constructor(
+    private db: DatabaseService,
+    private snooze: SnoozeService,
+    private alertController: AlertController
+  ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     // this.fetchTransactions();
     this.setToday();
-    // await this.listener();
+    // await this.removeListener();
+    LocalNotifications.removeAllListeners().then(async () => {
+      await this.listener();
+    });
   }
 
   // async fetchTransactions() {
@@ -159,12 +174,150 @@ export class TransactionsPage implements OnInit {
 
   //let try
 
-  // async listener() {
-  //   await LocalNotifications.addListener(
-  //     'localNotificationActionPerformed',
-  //     async (noti: any) => {
-  //       console.log(' the listener is running in transaction');
-  //     }
-  //   );
-  // }
+  async removeListener() {
+    console.log('removing listener in function of removeListener()');
+    await LocalNotifications.removeAllDeliveredNotifications();
+    await LocalNotifications.removeAllListeners();
+    return;
+  }
+
+  async listener() {
+    await LocalNotifications.addListener(
+      'localNotificationActionPerformed',
+      async (noti: any) => {
+        console.log(' the listener is running in transaction');
+        console.log(noti);
+        this.eventName = noti.notification.title;
+        let date = noti.notification.schedule.at;
+
+        if (noti.actionId == 'tap') {
+          await LocalNotifications.cancel({
+            notifications: [
+              {
+                id: 101,
+              },
+            ],
+          });
+          this.removeListener().then(async () => {
+            await this.sugarAlertHandler();
+            this.listener();
+
+            
+          });
+        } else if (noti.actionId == '15') {
+          let data = {
+            id: 101,
+            title: this.eventName,
+            body: this.eventName,
+            date: new Date(new Date().getTime() + 15 * 1000).toString(),
+          };
+          this.snooze.scheduleNoti(data);
+        }
+
+        //   else if (noti.actionId == '30') {
+        //     let data ={
+        //       id:102,
+        //       title: this.eventName,
+        //       body: this.eventName,
+        //       date: new Date(new Date().getTime() + 30*1000).toString(),
+        //     }
+        //     this.snooze.scheduleNoti(data)
+        // }
+        else if (noti.actionId == 'reject') {
+          let data = {
+            eventName: noti.notification.title,
+            date: new Date().toString(),
+            sugarLevel: 1,
+            dose: 1,
+            action: 'Rejected',
+          };
+          console.log('rejected data from FE', data);
+
+          LocalNotifications.cancel({
+            notifications: [
+              {
+                id: 101,
+              },
+            ],
+          });
+          this.removeListener().then(async () => {
+            this.db.addTransaction(data);
+            this.listener();
+            this.dateForFilter({ value: this.selectMode });
+          });
+        }
+      }
+    );
+  }
+
+  async createSugarAlert() {
+    return await this.alertController.create({
+      header: `It's ${this.eventName} time`,
+      message: 'Please enter the sugarLevel.',
+      inputs: [{ placeholder: '20', type: 'number', name: 'sugarlvl' }],
+      buttons: [{ text: 'Ok', role: 'ok' }],
+      animated: true,
+    });
+  }
+
+  async sugarAlertHandler() {
+    this.sugarlvlAlert = await this.createSugarAlert();
+    await this.sugarlvlAlert.present();
+    // await LocalNotifications.removeAllDeliveredNotifications();
+    // await LocalNotifications.removeAllListeners();
+
+    // Waiting for the alert to be dismissed
+    const { role, data } = await this.sugarlvlAlert.onDidDismiss();
+    console.log(data);
+
+    // Handling the result
+    if (role === 'ok') {
+      this.sugarLevel = Number(data.values.sugarlvl);
+      const res: any = await this.db.sendInsulin({
+        sugarLevel: this.sugarLevel,
+        eventName: this.eventName,
+      });
+      this.insulin = res.values[0].dose;
+      data.values.sugarlvl = '';
+      // await this.sugarlvlAlert.dismiss();
+      this.insulinAlertHandler();
+    } else {
+      console.log('Alert dismissed without entering a value');
+    }
+  }
+
+  async createInsulinAlert() {
+    return await this.alertController.create({
+      header: `According to your sugar level.`,
+      message: `Insulin Intake ${this.insulin} Units.`,
+      buttons: [{ text: 'Ok', role: 'ok' }],
+      animated: true,
+    });
+  }
+
+  async insulinAlertHandler() {
+    this.insulinAlert = await this.createInsulinAlert();
+    await this.insulinAlert.present();
+    const { role, data } = await this.insulinAlert.onDidDismiss();
+    console.log(data);
+
+    if (role === 'ok') {
+      this.addTransaction();
+    }
+  }
+
+  async addTransaction() {
+    const data = {
+      eventName: this.eventName,
+      sugarLevel: this.sugarLevel,
+      dose: this.insulin,
+      date: new Date().toString(),
+      action: 'Success',
+    };
+    console.log('data for update Transaction ', data);
+    await this.db.addTransaction(data);
+    this.dateForFilter({ value: this.selectMode });
+    this.sugarLevel = 0;
+    this.insulin = '';
+  }
 }

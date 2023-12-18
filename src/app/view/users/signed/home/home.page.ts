@@ -37,65 +37,7 @@ export class HomePage implements OnInit {
   async ngOnInit() {
     await LocalNotifications.removeAllListeners();
     // CLICKED
-    await LocalNotifications.addListener(
-      'localNotificationActionPerformed',
-      async (noti: any) => {
-        console.log(noti);
-        this.eventName = noti.notification.title;
-        let date = noti.notification.schedule.at;
-
-        if (noti.actionId == 'tap') {
-          LocalNotifications.cancel({
-            notifications: [
-              {
-                id: 101,
-              },
-            ],
-          });
-          this.removeListener().then(async () => {
-            await this.sugarAlertHandler();
-          });
-        } else if (noti.actionId == '15') {
-          let data = {
-            id: 101,
-            title: this.eventName,
-            body: this.eventName,
-            date: new Date(new Date().getTime() + 15 * 1000).toString(),
-          };
-          this.snooze.scheduleNoti(data);
-        }
-        //   else if (noti.actionId == '30') {
-        //     let data ={
-        //       id:102,
-        //       title: this.eventName,
-        //       body: this.eventName,
-        //       date: new Date(new Date().getTime() + 30*1000).toString(),
-        //     }
-        //     this.snooze.scheduleNoti(data)
-        // }
-        else if (noti.actionId == 'reject') {
-          let data = {
-            eventName: noti.notification.title,
-            date: new Date().toString(),
-            sugarLevel: 1,
-            dose: 1,
-            action: 'Rejected',
-          };
-          console.log('rejected data from FE', data);
-
-          LocalNotifications.cancel({
-            notifications: [
-              {
-                id: 101,
-              },
-            ],
-          });
-          this.removeListener().then(async () => {
-            this.db.addTransaction(data);
-          });
-        }
-      }
-    );
+    this.listener();
 
     // RECIEVED
     // await LocalNotifications.addListener(
@@ -124,10 +66,65 @@ export class HomePage implements OnInit {
     this.getPendingNotifications();
   }
 
+  async listener() {
+    await LocalNotifications.addListener(
+      'localNotificationActionPerformed',
+      async (noti: any) => {
+        console.log(noti);
+        this.eventName = noti.notification.title;
+        let date = noti.notification.schedule.at;
+
+        if (noti.actionId == 'tap') {
+          await LocalNotifications.cancel({
+            notifications: [
+              {
+                id: 101,
+              },
+            ],
+          });
+          this.removeListener().then(async () => {
+            await this.sugarAlertHandler();
+            this.listener();
+          });
+        } else if (noti.actionId == '15') {
+          let data = {
+            id: 101,
+            title: this.eventName,
+            body: this.eventName,
+            date: new Date(new Date().getTime() + 15 * 1000).toString(),
+          };
+          this.snooze.scheduleNoti(data);
+        } else if (noti.actionId == 'reject') {
+          let data = {
+            eventName: noti.notification.title,
+            date: new Date().toString(),
+            sugarLevel: 1,
+            dose: 1,
+            action: 'Rejected',
+          };
+          console.log('rejected data from FE', data);
+
+          LocalNotifications.cancel({
+            notifications: [
+              {
+                id: 101,
+              },
+            ],
+          });
+          this.removeListener().then(async () => {
+            this.db.addTransaction(data);
+            this.listener();
+          });
+        }
+      }
+    );
+  }
+
   async removeListener() {
     console.log('removing listener in function of removeListener()');
     await LocalNotifications.removeAllDeliveredNotifications();
     await LocalNotifications.removeAllListeners();
+    return;
   }
 
   async fetchUser() {
