@@ -35,6 +35,7 @@ export class SettingPage implements OnInit {
 
   async ngOnInit() {
     await this.fetchEvents();
+    // this.listener()
   }
 
   selectTime(data: any) {
@@ -42,7 +43,7 @@ export class SettingPage implements OnInit {
   }
 
   async fetchEvents() {
-    // this.listener()
+    // await this.listener()
     this.result = await this.db.getAllEvents();
     this.result = this.result[0]?.values.forEach(
       (item: any) => (item.eventTime = new Date(item?.eventTime))

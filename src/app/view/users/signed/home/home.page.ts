@@ -35,6 +35,7 @@ export class HomePage implements OnInit {
   }
 
   async ngOnInit() {
+    await LocalNotifications.removeAllListeners();
     // CLICKED
     await LocalNotifications.addListener(
       'localNotificationActionPerformed',
