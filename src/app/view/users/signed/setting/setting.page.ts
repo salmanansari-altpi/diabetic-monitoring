@@ -32,6 +32,8 @@ export class SettingPage implements OnInit {
   transactionInsulin: any;
   sugarLevel: any;
 
+  deleteData: any;
+
   constructor(
     private animationCtrl: AnimationController,
     private db: DatabaseService,
@@ -113,10 +115,12 @@ export class SettingPage implements OnInit {
   }
 
   // delete event
-  async deleteEvent(data: any) {
-    console.log(data);
-    // const id = data.deleteId.el.deleteId;
-    await this.db.deleteEvents(data.eventName);
+  deleteButton(data: any) {
+    this.deleteData = data;
+  }
+  async deleteEvent() {
+    console.log(this.deleteData);
+    await this.db.deleteEvents(this.deleteData.eventName);
     await this.updateNotification();
     this.fetchEvents();
     await LocalNotifications.removeAllListeners();

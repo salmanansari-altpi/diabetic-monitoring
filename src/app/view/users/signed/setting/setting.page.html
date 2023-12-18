@@ -48,7 +48,21 @@
         <ion-col> {{ sdata.eventName}} </ion-col>
         <ion-col> {{ sdata.eventTime | date: 'shortTime' }} </ion-col>
         <ion-col>
-          <ion-button class="btn" (click)="deleteEvent({ eventName: sdata.eventName })">Delete</ion-button>
+          <ion-button id="delete" color="danger" fill="clear"
+            (click)="deleteButton({ eventName: sdata.eventName })">Delete</ion-button>
+          <ion-modal #modal trigger="delete" [enterAnimation]="enterAnimation" [leaveAnimation]="leaveAnimation">
+            <ng-template>
+              <ion-content>
+                <ion-text>
+                  Are you sure?
+                </ion-text>
+                <ion-button  fill="clear"
+                (click)="modal.dismiss()">Cancel</ion-button>
+                <ion-button color="danger" fill="clear"
+                  (click)="deleteEvent()">Delete</ion-button>
+              </ion-content>
+            </ng-template>
+          </ion-modal>
         </ion-col>
       </ion-row>
       <!-- <ion-row>
@@ -72,7 +86,7 @@
             <ion-text> {{ ldata?.dose}} </ion-text>
           </ion-col>
           <ion-col>
-            <ion-button class="btn" fill="clear" [id]="ldata?.id" #id
+            <ion-button fill="clear" color="success" [id]="ldata?.id" #id
               (click)="toggleEditHandler({ id })">Edit</ion-button>
           </ion-col>
         </ion-row>
