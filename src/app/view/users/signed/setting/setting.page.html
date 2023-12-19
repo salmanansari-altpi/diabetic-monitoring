@@ -15,7 +15,7 @@
         <div class="time">
           <ion-label>Time: </ion-label>
           <div id="etime" style="padding-top: 1rem; margin-left: 2vw; font-size: 1.4rem">
-            <ion-text> {{ editTime | date : 'shortTime'}} </ion-text>
+            <ion-text class="text-center"> {{ editTime | date : 'shortTime'}} </ion-text>
           </div>
         </div>
         <ion-modal trigger="etime" [enterAnimation]="enterAnimation" [leaveAnimation]="leaveAnimation">
@@ -48,26 +48,32 @@
         <ion-col> {{ sdata.eventName}} </ion-col>
         <ion-col> {{ sdata.eventTime | date: 'shortTime' }} </ion-col>
         <ion-col>
-          <ion-button id="delete" color="danger" fill="clear"
+          <ion-button color="danger" fill="clear"
             (click)="deleteButton({ eventName: sdata.eventName })">Delete</ion-button>
-          <ion-modal #modal trigger="delete" [enterAnimation]="enterAnimation" [leaveAnimation]="leaveAnimation">
-            <ng-template>
-              <ion-content>
-                <ion-text>
-                  Are you sure?
-                </ion-text>
-                <ion-button  fill="clear"
-                (click)="modal.dismiss()">Cancel</ion-button>
-                <ion-button color="danger" fill="clear"
-                  (click)="deleteEvent()">Delete</ion-button>
-              </ion-content>
-            </ng-template>
-          </ion-modal>
         </ion-col>
       </ion-row>
-      <!-- <ion-row>
-
-      </ion-row> -->
+      <ion-modal [isOpen]="deletemodal" [enterAnimation]="enterAnimation"
+        [leaveAnimation]="leaveAnimation">
+        <ng-template>
+          <ion-content>
+            <ion-card>
+              <ion-card-title  class="ion-text-center ion-padding-top">
+                Are you sure?
+              </ion-card-title>
+              <ion-card-content>
+                <ion-toolbar>
+                  <ion-buttons slot="start">
+                    <ion-button fill="clear" (click)="deletemodal = false">Cancel</ion-button>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                    <ion-button color="danger" fill="clear" (click)="deleteEvent()">Delete</ion-button>
+                  </ion-buttons>
+                </ion-toolbar>
+              </ion-card-content>
+            </ion-card>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
       <ion-row>
         <ion-col> starting Range </ion-col>
         <ion-col> Ending Range </ion-col>

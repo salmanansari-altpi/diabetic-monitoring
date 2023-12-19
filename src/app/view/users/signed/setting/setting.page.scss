@@ -4,7 +4,7 @@
   padding: 0 2vh;
 
   ion-label {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 
   div {
@@ -31,19 +31,11 @@ ion-col {
   margin-top: 2vh;
 }
 
-// .btn {
-//   color: #ffd099;
-// }
-
 ion-list {
   background-color: #222;
   color: #fff;
 }
 
-// .btn {
-//   background-color: #2c2d2f;
-//   color: #fff;
-// }
 ion-modal {
   --background: rgb(44, 39, 45, 0.2);
   &::part(content) {
@@ -61,7 +53,3 @@ ion-modal {
   height: 5rem;
   visibility: hidden;
 }
-
-// .btn {
-//   background-color: #ffd099 !important;
-// }

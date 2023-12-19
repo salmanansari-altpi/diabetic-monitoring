@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { AlertController, AnimationController } from '@ionic/angular';
+import { IonModal } from '@ionic/angular/common';
 import { DatabaseService } from 'src/shared/database/database.service';
 import { NotificationService } from 'src/shared/notification/notification.service';
 import { SnoozeService } from 'src/shared/snoozeNoti/snooze.service';
@@ -33,6 +34,7 @@ export class SettingPage implements OnInit {
   sugarLevel: any;
 
   deleteData: any;
+  deletemodal:boolean = false;
 
   constructor(
     private animationCtrl: AnimationController,
@@ -117,12 +119,14 @@ export class SettingPage implements OnInit {
   // delete event
   deleteButton(data: any) {
     this.deleteData = data;
+    this.deletemodal = true;
   }
   async deleteEvent() {
     console.log(this.deleteData);
     await this.db.deleteEvents(this.deleteData.eventName);
     await this.updateNotification();
     this.fetchEvents();
+    this.deletemodal = false;
     await LocalNotifications.removeAllListeners();
     await this.listener();
   }
@@ -148,7 +152,7 @@ export class SettingPage implements OnInit {
       .create()
       .addElement(baseEl)
       .easing('ease-out')
-      .duration(200)
+      .duration(300)
       .addAnimation([backdropAnimation, wrapperAnimation]);
   };
 
